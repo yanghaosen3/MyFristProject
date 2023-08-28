@@ -1,0 +1,27 @@
+cmake_minimum_required(VERSION 3.27.4)
+project(ScreenCap)
+set(CMAKE_AUTOMOC ON)
+set(Qt5_DIR D:/study/Qt/5.11.3/msvc2017_64/lib/cmake/Qt5)
+find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
+
+include_directories(${PROJECT_SOURCE_DIR}/ffmpeg/include)
+include_directories(${PROJECT_SOURCE_DIR}/screencap/screencapture)
+set(SOURCES  
+    ${PROJECT_SOURCE_DIR}/ScreenCapture/main.cpp  
+    ${PROJECT_SOURCE_DIR}/ScreenCapture/readThread.cpp  
+    ${PROJECT_SOURCE_DIR}/ScreenCapture/ScreenCaptureWidget.cpp  
+    ${PROJECT_SOURCE_DIR}/ScreenCapture/VideoCodec.cpp  
+    ${PROJECT_SOURCE_DIR}/ScreenCapture/VideoDecode.cpp  
+)  
+add_executable(ScreenCap ${SOURCES})
+target_link_libraries(ScreenCap
+	Qt5::Core   
+    	Qt5::Widgets  
+	ffmpeg/lib/avfilter
+        ffmpeg/lib/avformat
+        ffmpeg/lib/avcodec
+        ffmpeg/lib/avutil
+        ffmpeg/lib/swresample
+        ffmpeg/lib/swscale
+	ffmpeg/lib/avdevice)
+target_link_libraries(ScreenCap Qt5::Core Qt5::Widgets)

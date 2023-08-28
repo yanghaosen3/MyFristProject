@@ -1,16 +1,47 @@
-/******************************************************************************
- * @ÎÄ¼şÃû     readThread.h
- * @¹¦ÄÜ       ÊÓÆµ½âÂëÀà£¬ÔÚÕâ¸öÀàÖĞµ÷ÓÃffmpeg´ò¿ªÊÓÆµ½øĞĞ½âÂë
- * @¿ª·¢Õß     yhs
- * @ÓÊÏä       897111137@qq.com
- * @Ê±¼ä       2023/8/23
+ï»¿/******************************************************************************
+ * @æ–‡ä»¶å     readThread.h
+ * @åŠŸèƒ½       è§†é¢‘è§£ç ç±»ï¼Œåœ¨è¿™ä¸ªç±»ä¸­è°ƒç”¨ffmpegæ‰“å¼€è§†é¢‘è¿›è¡Œè§£ç 
+ * @å¼€å‘è€…     yhs
+ * @é‚®ç®±       897111137@qq.com
+ * @æ—¶é—´       2023/8/23
  *****************************************************************************/
 #ifndef _SCREENCAP_VIDEODECODEC_H
 #define _SCREENCAP_VIDEODECODEC_H
-class VoideDecode
+#include "memory"
+#include <QPoint>
+#include <QSize>
+class AVFormatContext;
+class AVCodecContext;
+class AVInputFormat;
+class AVFrame;
+class AVPacket;
+class VideoDecode
 {
 public:
-	VoideDecode();
-	~VoideDecode();
+	VideoDecode();
+	~VideoDecode();
+	bool init();
+	AVFrame* read();
+	bool isEnd();
+	void close();
+	void free();
+	AVCodecContext* getCodecContext();
+	QPoint getAvFrameRate() const;
+	QSize getSize() const;
+
+
+private:
+	void initFFmpeg();
+	void clear();
+private:
+	QPoint m_avFrameTate;
+	QSize m_size;
+	const AVInputFormat* m_pAvInputFormat = nullptr;			//è¾“å…¥è®¾å¤‡
+	AVFormatContext* m_pAvFormatContext = nullptr;				//è§£å°è£…ä¸Šä¸‹æ–‡
+	AVCodecContext* m_pAvCodecContext = nullptr;				//è§£ç å™¨ä¸Šä¸‹æ–‡
+	AVPacket* m_pPacket = nullptr;								//æ•°æ®åŒ…
+	AVFrame* m_pFrame = nullptr;								//è§£ç åçš„è§†é¢‘å¸§
+	int m_videIndex = -1;										//è§†é¢‘æµç´¢å¼•
+	bool m_bEnd = false;
 };
 #endif // !_SCREENCAP_VIDEODECODEC_H

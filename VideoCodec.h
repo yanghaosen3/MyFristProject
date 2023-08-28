@@ -1,16 +1,42 @@
-/******************************************************************************
- * @ÎÄ¼şÃû     readThread.h
- * @¹¦ÄÜ       ÊÓÆµµÄ±àÂë±£´æÀà£¬½«AVFrameÍ¼Ïñ½øĞĞ¸ñÊ½×ª»»£¬È»ºó±àÂë±£´æµ½ÊÓÆµÎÄ¼şÖĞ
- * @¿ª·¢Õß     yhs
- * @ÓÊÏä       897111137@qq.com
- * @Ê±¼ä       2023/8/23
+ï»¿/******************************************************************************
+ * @æ–‡ä»¶å     readThread.h
+ * @åŠŸèƒ½       è§†é¢‘çš„ç¼–ç ä¿å­˜ç±»ï¼Œå°†AVFrameå›¾åƒè¿›è¡Œæ ¼å¼è½¬æ¢ï¼Œç„¶åç¼–ç ä¿å­˜åˆ°è§†é¢‘æ–‡ä»¶ä¸­
+ * @å¼€å‘è€…     yhs
+ * @é‚®ç®±       897111137@qq.com
+ * @æ—¶é—´       2023/8/23
  *****************************************************************************/
 #ifndef _SCREENCAP_VIDEOCODEC_H
 #define _SCREENCAP_VIDEOCODEC_H
+#include <QString>
+#include <QPoint>
+#include <QMutex>
+class AVCodecContext;
+class AVFormatContext;
+class SwsContext;
+class AVStream;
+class AVPacket;
+class AVFrame;
 class VideoCodec
 {
 public:
 	VideoCodec();
 	~VideoCodec();
+	bool open(AVCodecContext* pAvCodecContext, const QString& path, const QPoint& size);
+	void free();
+	void close();
+	void write(AVFrame* pFrame);
+
+private:
+	bool swsFormat(AVFrame* pFrame);
+private:
+	AVFormatContext* m_pFormatContext = nullptr;
+	AVCodecContext* m_pCodecContext = nullptr;
+	SwsContext* m_pSwsContext = nullptr;
+	AVStream* m_pVideoStream = nullptr;
+	AVPacket* m_pPacket = nullptr;
+	AVFrame* m_pFrame = nullptr;
+	QMutex	m_mutex;
+	int m_frameIdex = 0;
+	bool m_bWriteToHeader = false;
 };
 #endif // !_SCREENCAP_VIDEOCODEC_H
